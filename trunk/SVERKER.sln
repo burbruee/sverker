@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SVERKER", "SVERKER\SVERKER.vcproj", "{084A5CF3-1B5C-4BBA-86B4-9322D0DB758D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{084A5CF3-1B5C-4BBA-86B4-9322D0DB758D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{084A5CF3-1B5C-4BBA-86B4-9322D0DB758D}.Debug|Win32.Build.0 = Debug|Win32
+		{084A5CF3-1B5C-4BBA-86B4-9322D0DB758D}.Release|Win32.ActiveCfg = Release|Win32
+		{084A5CF3-1B5C-4BBA-86B4-9322D0DB758D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		VisualSVNWorkingCopyRoot = .
+	EndGlobalSection
+EndGlobal
