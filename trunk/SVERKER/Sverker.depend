@@ -1,1 +1,10 @@
 # depslib dependency file v1.0
+1278185130 source:/home/burbruee/Projects/sverker/SVERKER/main.cpp
+	<SFML/System.hpp>
+	<SFML/Network.hpp>
+	<algorithm>
+	<vector>
+	<iostream>
+	<string.h>
+	<time.h>
+
