@@ -20,21 +20,34 @@ class stringHandler
 
         void splitString(const std::string& str,std::vector<std::string>& tokens,const std::string& delimiters = " ")
             {
-                std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
-                std::string::size_type pos = str.find_first_of(delimiters, lastPos);
+                std::string::size_type lastPos = str.find_first_not_of(delimiters,0);
+                std::string::size_type pos = str.find_first_of(delimiters,lastPos);
 
                 while (std::string::npos != pos || std::string::npos != lastPos)
                 {
                     tokens.push_back(str.substr(lastPos, pos - lastPos));
-                    lastPos = str.find_first_not_of(delimiters, pos);
-                    pos = str.find_first_of(delimiters, lastPos);
+                    lastPos = str.find_first_not_of(delimiters,pos);
+                    pos = str.find_first_of(delimiters,lastPos);
                 }
+            }
+
+        std::string replaceString(std::string str,std::string l,std::string rep)
+            {
+                std::string::size_type pos = str.find(l);
+
+                while(std::string::npos != pos)
+                    {
+                        str.replace(pos,l.length(),rep);
+                        pos = str.find(l);
+                    }
+
+                return str;
             }
 
         std::string mergeLast(std::vector<std::string>& arr,int at)
             {
                 std::string end = "";
-                for (int i = at;i < arr.size();i++)
+                for (unsigned int i = at;i < arr.size();i++)
                     {
                         end += arr[i];
                         end += " ";
@@ -57,9 +70,9 @@ class stringHandler
                 std::string change[] = {"å","ä","ö"};
                 std::string into[] = {"a","a","o"};
 
-                for (int i = 0;i < str -> length();i++)
+                for (unsigned int i = 0;i < str -> length();i++)
                     {
-                        for (int t = 0;t < 3;t++)
+                        for (unsigned int t = 0;t < 3;t++)
                             {
                                 if (str -> substr(i,1) == change[t])
                                     {
@@ -81,6 +94,9 @@ class IRCConnection
 
             bool connect(sf::IPAddress * hostAddr,int port,std::string nickname,const char * name,std::string channel)
                 {
+
+                    triggerInit(trigger,"hej§Tja, $n!|korv är gott§Ja, det är det.");
+
                     chan = channel;
                     nick = nickname;
 
@@ -122,14 +138,12 @@ class IRCConnection
                     else
                         {
                             std::string srecv(recv);
-                            //sH -> doUni(&srecv);
                             time_t myTime = time(NULL);
                             strftime(timeBuffer, 10, "%H:%M:%S", localtime(&myTime));
 
                             sH -> splitString(srecv,recvArr,"\r\n");
-                            for (int i = 0;i < recvArr.size();i++)
+                            for (unsigned int i = 0;i < recvArr.size();i++)
                                 {
-                                    //std::cout << " >> " << recvArr[i] << "\n";
                                     sH -> splitString(recvArr[i],recvArr2);
 
                                     if (recvArr2.size() > 1)
@@ -162,14 +176,12 @@ class IRCConnection
 
                                                     std::cout << " [" << timeBuffer << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> mergeLast(recvArr2,3) << "\n";
 
-                                                    if (sH -> mergeLast(recvArr2,3) == "hej")
+                                                    for (unsigned int i = 0;i < trigger.size();i++)
                                                         {
-                                                            channelSendMsg(recvArr2[2],std::string("Tja, !").insert(5,sH -> getNick(recvArr2[0])));
-                                                        }
-
-                                                    if (sH -> mergeLast(recvArr2,3) == "korv")
-                                                        {
-                                                            channelSendMsg(recvArr2[2],"Korv? Mums!");
+                                                            if (sH -> mergeLast(recvArr2,3) == trigger[i][0])
+                                                                {
+                                                                    channelSendMsg(recvArr2[2],sH -> replaceString(trigger[i][1],"$n",sH -> getNick(recvArr2[0])));
+                                                                }
                                                         }
                                                 }
                                         }
@@ -213,11 +225,25 @@ class IRCConnection
                     return true;
                 }
 
+            void triggerInit(std::vector< std::vector<std::string> > &vec,std::string in)
+                {
+                    std::vector<std::string> r;
+                    sH -> splitString(in,r,"|");
+
+                    for (unsigned int i = 0;i < r.size();i++)
+                        {
+                            std::vector<std::string> r2;
+                            sH -> splitString(r[i],r2,"§");
+                            vec.push_back(r2);
+                        }
+                }
+
             sf::SocketTCP mainSocket;
             char recv[1024];
             size_t r;
             std::string chan, nick, srecv;
             std::vector<std::string> recvArr, recvArr2;
+            std::vector< std::vector<std::string> > trigger;
             stringHandler * sH;
             char timeBuffer[10];
     };
@@ -243,8 +269,8 @@ int main()
         stringHandler strH;
         IRCConnection IRC(&strH);
 
-        sf::IPAddress iP("irc.quakenet.org");
-        if (!IRC.connect(&iP,6667,"SVERKER","SVERKER","#sverker"))
+        sf::IPAddress iP("se.quakenet.org");
+        if (!IRC.connect(&iP,6667,"SVERKER","Sverker","#sverker"))
             return 0;
 
         while(true)
