@@ -95,7 +95,9 @@ class IRCConnection
             bool connect(sf::IPAddress * hostAddr,int port,std::string nickname,const char * name,std::string channel)
                 {
 
-                    triggerInit(trigger,"hej§Tja, $n!|korv är gott§Ja, det är det.");
+                    std::cout << "Retrieving triggers... ";
+                    triggerInit(trigger,getTriggersFrom("www.xeyibland.se","/sverker/api.php"));
+                    std::cout << "DONE!\n";
 
                     chan = channel;
                     nick = nickname;
@@ -236,6 +238,21 @@ class IRCConnection
                             sH -> splitString(r[i],r2,"§");
                             vec.push_back(r2);
                         }
+                }
+
+            std::string getTriggersFrom(std::string host,std::string uri)
+                {
+                    sf::Http http;
+                    http.SetHost(host);
+
+                    sf::Http::Request req;
+                    req.SetMethod(sf::Http::Request::Get);
+                    req.SetURI(uri);
+
+                    sf::Http::Response resp = http.SendRequest(req);
+                    std::string body = resp.GetBody();
+
+                    return body;
                 }
 
             sf::SocketTCP mainSocket;
