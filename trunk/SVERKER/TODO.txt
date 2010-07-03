@@ -15,12 +15,12 @@
 
 TO DO (in order of importance)
 
-	[] Get better than Cjuubot
-	[] Create a trigger-system for easy trigger-management
-	[] Combine the trigger-system with PHP for database collection
-	[] Get him to understand important keywords in a private query from either Carl or Burbruee.
+	[ ] Get better than Cjuubot
+	[X] Create a trigger-system for easy trigger-management
+	[ ] Combine the trigger-system with PHP for database collection
+	[ ] Get him to understand important keywords in a private query from either Carl or Burbruee.
 		- UPDATE TRIGGERS
 		- QUIT :REASON
 		- SAY CHAN :MESSAGE
 		- and other stuff
-	[] Better UNICODE-support.
+	[ ] Better UNICODE-support.
