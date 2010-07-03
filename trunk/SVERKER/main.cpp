@@ -11,7 +11,9 @@
 #include <vector>
 #include <iostream>
 #include <string.h>
+#include <string>
 #include <time.h>
+#include <cctype>
 
 class stringHandler
     {
@@ -65,21 +67,17 @@ class stringHandler
                 return hmask;
             }
 
-        void doUni(std::string * str)
+        std::string toLower(std::string str)
             {
-                std::string change[] = {"å","ä","ö"};
-                std::string into[] = {"a","a","o"};
+                unsigned int length = str.length();
+                std::string uni("ÅÄÖ");
+                std::string to("åäö");
+                for(unsigned int i = 0;i < length;i++)
+                {
+                    str[i] = std::tolower(str[i]);
+                }
 
-                for (unsigned int i = 0;i < str -> length();i++)
-                    {
-                        for (unsigned int t = 0;t < 3;t++)
-                            {
-                                if (str -> substr(i,1) == change[t])
-                                    {
-                                        str -> replace(i,1,into[t]);
-                                    }
-                            }
-                    }
+                return str;
             }
     };
 
@@ -97,7 +95,7 @@ class IRCConnection
 
                     std::cout << "Retrieving triggers... ";
                     triggerInit(trigger,getTriggersFrom("www.xeyibland.se","/sverker/api.php"));
-                    std::cout << "DONE!\n";
+                    std::cout << "DONE!\n[Loaded " << trigger.size() << " triggers.]\n\n";
 
                     chan = channel;
                     nick = nickname;
@@ -180,7 +178,7 @@ class IRCConnection
 
                                                     for (unsigned int i = 0;i < trigger.size();i++)
                                                         {
-                                                            if (sH -> mergeLast(recvArr2,3) == trigger[i][0])
+                                                            if (sH -> toLower(sH -> mergeLast(recvArr2,3)) == trigger[i][0])
                                                                 {
                                                                     channelSendMsg(recvArr2[2],sH -> replaceString(trigger[i][1],"$n",sH -> getNick(recvArr2[0])));
                                                                 }
@@ -287,7 +285,7 @@ int main()
         IRCConnection IRC(&strH);
 
         sf::IPAddress iP("se.quakenet.org");
-        if (!IRC.connect(&iP,6667,"SVERKER","Sverker","#sverker"))
+        if (!IRC.connect(&iP,6667,"SVERKER22","Sverker","#sverker"))
             return 0;
 
         while(true)
