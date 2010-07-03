@@ -123,7 +123,9 @@ class IRCConnection
                         {
                             std::string srecv(recv);
                             //sH -> doUni(&srecv);
-                            _strtime(curTime);
+                            time_t myTime = time(NULL);
+                            strftime(timeBuffer, 10, "%H:%M:%S", localtime(&myTime));
+
                             sH -> splitString(srecv,recvArr,"\r\n");
                             for (int i = 0;i < recvArr.size();i++)
                                 {
@@ -158,7 +160,7 @@ class IRCConnection
                                             if (recvArr2[1] == "PRIVMSG")
                                                 {
 
-                                                    std::cout << " [" << curTime << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> mergeLast(recvArr2,3) << "\n";
+                                                    std::cout << " [" << timeBuffer << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> mergeLast(recvArr2,3) << "\n";
 
                                                     if (sH -> mergeLast(recvArr2,3) == "hej")
                                                         {
@@ -207,8 +209,7 @@ class IRCConnection
                     if (!socketSend(&mainSocket,std::string("PRIVMSG ").append(channel).append(" :").append(message)))
                         return false;
 
-                    _strtime(curTime);
-                    std::cout << " [" << curTime << "] <" << nick << "> " << message << "\n";
+                    std::cout << " [" << timeBuffer << "] <" << nick << "> " << message << "\n";
                     return true;
                 }
 
@@ -218,7 +219,7 @@ class IRCConnection
             std::string chan, nick, srecv;
             std::vector<std::string> recvArr, recvArr2;
             stringHandler * sH;
-            char curTime[9];
+            char timeBuffer[10];
     };
 
 int main()
