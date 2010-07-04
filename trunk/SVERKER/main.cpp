@@ -70,8 +70,6 @@ class stringHandler
         std::string toLower(std::string str)
             {
                 unsigned int length = str.length();
-                std::string uni("ÅÄÖ");
-                std::string to("åäö");
                 for(unsigned int i = 0;i < length;i++)
                 {
                     str[i] = std::tolower(str[i]);
@@ -94,7 +92,7 @@ class IRCConnection
                 {
 
                     std::cout << "Retrieving triggers... ";
-                    triggerInit(trigger,getTriggersFrom("www.xeyibland.se","/sverker/api.php"));
+                    triggerInit(trigger,getTriggersFrom("sverker.burbruee.se","/api.php"));
                     std::cout << "DONE!\n[Loaded " << trigger.size() << " triggers.]\n\n";
 
                     chan = channel;
@@ -144,6 +142,7 @@ class IRCConnection
                             sH -> splitString(srecv,recvArr,"\r\n");
                             for (unsigned int i = 0;i < recvArr.size();i++)
                                 {
+                                    //std::cout << " >> " << recvArr[i] << "\n";
                                     sH -> splitString(recvArr[i],recvArr2);
 
                                     if (recvArr2.size() > 1)
@@ -167,7 +166,23 @@ class IRCConnection
                                                 {
                                                     if (sH -> getNick(recvArr2[0]) == nick)
                                                         {
-                                                            std::cout << " You're now talking in " << recvArr2[2] << ".\n";
+                                                            std::cout << " You're now talking in " << recvArr2[2] << ":\n";
+                                                        }
+                                                    else
+                                                        {
+                                                            std::cout << " [" << timeBuffer << "] " << sH -> getNick(recvArr2[0]) << " joined " << recvArr2[2] << ".\n";
+                                                        }
+                                                }
+
+                                            if (recvArr2[1] == "PART")
+                                                {
+                                                    if (recvArr2.size() > 3)
+                                                        {
+                                                            std::cout << " [" << timeBuffer << "] " << sH -> getNick(recvArr2[0]) << " left " << recvArr2[2] << ". (" << sH -> mergeLast(recvArr2,3) << ")\n";
+                                                        }
+                                                    else
+                                                        {
+                                                            std::cout << " [" << timeBuffer << "] " << sH -> getNick(recvArr2[0]) << " left " << recvArr2[2] << ".\n";
                                                         }
                                                 }
 
@@ -176,11 +191,28 @@ class IRCConnection
 
                                                     std::cout << " [" << timeBuffer << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> mergeLast(recvArr2,3) << "\n";
 
-                                                    for (unsigned int i = 0;i < trigger.size();i++)
+                                                    if (recvArr2[2] != nick)
                                                         {
-                                                            if (sH -> toLower(sH -> mergeLast(recvArr2,3)) == trigger[i][0])
+                                                            for (unsigned int i = 0;i < trigger.size();i++)
                                                                 {
-                                                                    channelSendMsg(recvArr2[2],sH -> replaceString(trigger[i][1],"$n",sH -> getNick(recvArr2[0])));
+                                                                    if (sH -> toLower(sH -> mergeLast(recvArr2,3)) == trigger[i][0])
+                                                                        {
+                                                                            channelSendMsg(recvArr2[2],sH -> replaceString(trigger[i][1],"$n",sH -> getNick(recvArr2[0])));
+                                                                        }
+                                                                }
+                                                        }
+                                                    else
+                                                        {
+                                                            if (sH -> getNick(recvArr2[0]) == "Frasse" || sH -> getNick(recvArr2[0]) == "Burbruee")
+                                                                {
+                                                                    if (recvArr2[3] == ":UPDATE")
+                                                                        {
+                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),"Clearing triggers... ".append(std::string(trigger.size())));
+                                                                            trigger.clear();
+                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),"Retrieving new triggers...");
+                                                                            triggerInit(trigger,getTriggersFrom("sverker.burbruee.se","/api.php"));
+                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),"DONE!");
+                                                                        }
                                                                 }
                                                         }
                                                 }
@@ -285,7 +317,7 @@ int main()
         IRCConnection IRC(&strH);
 
         sf::IPAddress iP("se.quakenet.org");
-        if (!IRC.connect(&iP,6667,"SVERKER22","Sverker","#sverker"))
+        if (!IRC.connect(&iP,6667,"SVERKER","Sverker","#sverker2"))
             return 0;
 
         while(true)
