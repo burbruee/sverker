@@ -207,7 +207,7 @@ class IRCConnection
                                                                 {
                                                                     if (recvArr2[3] == ":UPDATE")
                                                                         {
-                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),"Clearing triggers... ".append(std::string(trigger.size())));
+                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),"Clearing triggers... ");
                                                                             trigger.clear();
                                                                             channelSendMsg(sH -> getNick(recvArr2[0]),"Retrieving new triggers...");
                                                                             triggerInit(trigger,getTriggersFrom("sverker.burbruee.se","/api.php"));
