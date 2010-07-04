@@ -13,7 +13,7 @@
 #include <string.h>
 #include <string>
 #include <time.h>
-#include <cctype>
+//#include <cctype>
 
 class stringHandler
     {
@@ -188,11 +188,10 @@ class IRCConnection
 
                                             if (recvArr2[1] == "PRIVMSG")
                                                 {
-
-                                                    std::cout << " [" << timeBuffer << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> mergeLast(recvArr2,3) << "\n";
-
                                                     if (recvArr2[2] != nick)
                                                         {
+                                                            std::cout << " [" << timeBuffer << "] [" << recvArr2[2] << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> mergeLast(recvArr2,3) << "\n";
+
                                                             for (unsigned int i = 0;i < trigger.size();i++)
                                                                 {
                                                                     if (sH -> toLower(sH -> mergeLast(recvArr2,3)) == trigger[i][0])
@@ -212,6 +211,24 @@ class IRCConnection
                                                                             channelSendMsg(sH -> getNick(recvArr2[0]),"Retrieving new triggers...");
                                                                             triggerInit(trigger,getTriggersFrom("sverker.burbruee.se","/api.php"));
                                                                             channelSendMsg(sH -> getNick(recvArr2[0]),"DONE!");
+                                                                        }
+
+                                                                    if (recvArr2[3] == ":JOIN")
+                                                                        {
+                                                                            std::cout << "\n Joining " << recvArr2[4] << "...\n";
+                                                                            socketSend(&mainSocket,std::string("JOIN ").append(recvArr2[4]));
+                                                                        }
+
+                                                                    if (recvArr2[3] == ":PART")
+                                                                        {
+                                                                            if (recvArr2.size() > 5)
+                                                                                {
+                                                                                    socketSend(&mainSocket,std::string("PART ").append(recvArr2[4]).append(" :").append(sH -> mergeLast(recvArr2,5)));
+                                                                                }
+                                                                            else
+                                                                                {
+                                                                                    socketSend(&mainSocket,std::string("PART ").append(recvArr2[4]));
+                                                                                }
                                                                         }
                                                                 }
                                                         }
@@ -237,6 +254,7 @@ class IRCConnection
                     if (sock -> Send(buffer.data(),buffer.length()) != sf::Socket::Done)
                         return false;
 
+                    buffer = "";
                     return true;
                 }
 
@@ -253,7 +271,7 @@ class IRCConnection
                     if (!socketSend(&mainSocket,std::string("PRIVMSG ").append(channel).append(" :").append(message)))
                         return false;
 
-                    std::cout << " [" << timeBuffer << "] <" << nick << "> " << message << "\n";
+                    std::cout << " [" << timeBuffer << "] [" << channel << "] <" << nick << "> " << message << "\n";
                     return true;
                 }
 
@@ -317,7 +335,7 @@ int main()
         IRCConnection IRC(&strH);
 
         sf::IPAddress iP("se.quakenet.org");
-        if (!IRC.connect(&iP,6667,"SVERKER","Sverker","#sverker2"))
+        if (!IRC.connect(&iP,6667,"tjenare112","Sverker","#sverker2"))
             return 0;
 
         while(true)
