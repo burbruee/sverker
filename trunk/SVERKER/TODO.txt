@@ -16,11 +16,28 @@
 TO DO (in order of importance)
 
 	[ ] Get better than Cjuubot
+
+
 	[X] Create a trigger-system for easy trigger-management
+
+
 	[X] Combine the trigger-system with PHP for database collection
+
+
 	[ ] Get him to understand important keywords in a private query from either Carl or Burbruee.
+
 		- UPDATE TRIGGERS
 		- QUIT :REASON
 		- SAY CHAN :MESSAGE
 		- and other stuff
+
+	[ ] Allow more arguments for the triggers
+
+		- What to check for (PRIVMSG, JOIN, KICK etc)
+		- What to do (PRIVMSG, JOIN, KICK etc)
+		- Case-sensitive or not
+		- Position-sensitive or not
+		- etc etc etc
+
+
 	[ ] Better UNICODE-support.
