@@ -27,7 +27,7 @@ TO DO (in order of importance)
 	[X] Get him to understand important keywords in a private query from either Carl or Burbruee.
 
 		[X] UPDATE TRIGGERS
-		[X] FULL IRC
+		[X] Run all IRC-commands
 
 	[ ] Allow more arguments for the triggers
 
@@ -36,6 +36,11 @@ TO DO (in order of importance)
 		[ ] Case-sensitive or not
 		[ ] Position-sensitive or not
 		  - etc etc etc
+
+	[ ] Extend the API
+		
+		[ ] Adminlist
+		[ ] Config
 
 
 	[ ] Better UNICODE-support
