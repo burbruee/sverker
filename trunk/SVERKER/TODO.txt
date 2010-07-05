@@ -24,12 +24,10 @@ TO DO (in order of importance)
 	[X] Combine the trigger-system with PHP for database collection
 
 
-	[-] Get him to understand important keywords in a private query from either Carl or Burbruee.
+	[X] Get him to understand important keywords in a private query from either Carl or Burbruee.
 
 		[X] UPDATE TRIGGERS
-		[ ] QUIT :REASON
-		[ ] SAY CHAN :MESSAGE
-		  - and other stuff
+		[X] FULL IRC
 
 	[ ] Allow more arguments for the triggers
 
