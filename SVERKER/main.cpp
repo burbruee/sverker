@@ -69,9 +69,18 @@ class stringHandler
 
         std::string toLower(std::string str)
             {
-                unsigned int length = str.length();
-                for(unsigned int i = 0;i < length;i++)
+                char uni[] = {'Å','Ä','Ö'};
+                char to[] = {'å','ä','ö'};
+                for (unsigned int i = 0;i < str.length();i++)
                 {
+                    for(unsigned int t = 0;t < 3;t++)
+                        {
+                            if (str[i] == uni[t])
+                                {
+                                    str[i] = to[t];
+                                }
+                        }
+
                     str[i] = std::tolower(str[i]);
                 }
 
@@ -157,8 +166,8 @@ class IRCConnection
                                                 {
                                                     if (recvArr2[3] == "+i")
                                                         {
-															socketSend(&mainSocket,std::string("PRIVMSG Q@CServe.quakenet.org :AUTH SVERKERBOT mFKMFxnWvt"));
-															socketSend(&mainSocket,std::string("MODE SVERKER +x"));
+															//socketSend(&mainSocket,std::string("PRIVMSG Q@CServe.quakenet.org :AUTH SVERKERBOT mFKMFxnWvt"));
+															//socketSend(&mainSocket,std::string("MODE SVERKER +x"));
                                                             socketSend(&mainSocket,std::string("JOIN ").insert(5,chan));
                                                         }
                                                 }
@@ -347,11 +356,11 @@ int main()
         IRCConnection IRC(&strH);
 
         /*std::string n;
-        std::cout << "NICKNAME: "
+        std::cout << "NICKNAME: ";
         std::cin >> n;*/
 
         sf::IPAddress iP("se.quakenet.org");
-        if (!IRC.connect(&iP,6667,"SVERKER","SVERKER","#143"))
+        if (!IRC.connect(&iP,6667,"tjenare123","SVERKER","#143"))
             return 0;
 
         while(true)
