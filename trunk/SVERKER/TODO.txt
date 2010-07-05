@@ -15,7 +15,7 @@
 
 TO DO (in order of importance)
 
-	[ ] Get better than Cjuubot
+	[X] Get better than Cjuubot
 
 
 	[X] Create a trigger-system for easy trigger-management
