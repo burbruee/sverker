@@ -112,8 +112,10 @@ class stringHandler
                                 }
                             else
                                 {
-                                    //KOMMENTERA PÅ WINDOWS-SYSTEM
-                                    //endStr.append("\n");
+                                    #ifndef _WIN32
+                                        endStr.append("\n");
+                                    #endif
+
                                     endStr.append(((80 - whitespaces) - curSize) + whitespaces,' ');
                                     curSize = 0;
                                     i--;
