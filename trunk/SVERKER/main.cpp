@@ -13,7 +13,7 @@
 #include <string.h>
 #include <string>
 #include <time.h>
-//#include <cctype>
+#include <cctype>
 
 class stringHandler
     {
@@ -218,8 +218,14 @@ class IRCConnection
                                                                             std::cout << "\n Joining " << recvArr2[4] << "...\n";
                                                                             socketSend(&mainSocket,std::string("JOIN ").append(recvArr2[4]));
                                                                         }
+																
+																	if (recvArr2[3] == ":PRIVMSG")
+                                                                        {
+                                                                            std::cout << "\n Saying '" << recvArr2[5] << "' in " << recvArr2[4] << "...\n";																			
+																			channelSendMsg(recvArr2[4], sH -> mergeLast(recvArr2,5));
+                                                                        }
 
-                                                                    if (recvArr2[3] == ":PART")
+																	if (recvArr2[3] == ":PART")
                                                                         {
                                                                             if (recvArr2.size() > 5)
                                                                                 {
@@ -335,8 +341,11 @@ int main()
         IRCConnection IRC(&strH);
 
         sf::IPAddress iP("se.quakenet.org");
-        if (!IRC.connect(&iP,6667,"tjenare112","Sverker","#sverker2"))
+        if (!IRC.connect(&iP,6667,"SVERKER","Sverker","#sverker2"))
+		{
+			std::cin.get();
             return 0;
+		}
 
         while(true)
             {
