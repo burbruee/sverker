@@ -36,7 +36,6 @@ TO DO (in order of importance)
 		[ ] What to do (PRIVMSG, JOIN, KICK etc)
 		[X] Case-sensitive or not
 		[X] Position-sensitive or not
-		  - etc etc etc
 
 
 	[ ] Prevent flooding - internal timer.
