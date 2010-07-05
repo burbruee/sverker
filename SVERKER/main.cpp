@@ -157,8 +157,8 @@ class IRCConnection
                                                 {
                                                     if (recvArr2[3] == "+i")
                                                         {
-															socketSend(&mainSocket,std::string("PRIVMSG Q@CServe.quakenet.org :AUTH SVERKERBOT mFKMFxnWvt"));																
-															socketSend(&mainSocket,std::string("MODE SVERKER +x"));	
+															socketSend(&mainSocket,std::string("PRIVMSG Q@CServe.quakenet.org :AUTH SVERKERBOT mFKMFxnWvt"));
+															socketSend(&mainSocket,std::string("MODE SVERKER +x"));
                                                             socketSend(&mainSocket,std::string("JOIN ").insert(5,chan));
                                                         }
                                                 }
@@ -203,7 +203,7 @@ class IRCConnection
 
                                                             for (unsigned int i = 0;i < trigger.size();i++)
                                                                 {
-                                                                    if (sH -> toLower(sH -> mergeLast(recvArr2,3)).find(trigger[i][0]) != std::string::npos)
+                                                                    if (checkTriggerString(sH -> mergeLast(recvArr2,3),trigger[i][0],trigger[i][2],trigger[i][3]))
                                                                         {
                                                                             channelSendMsg(recvArr2[2],sH -> replaceString(trigger[i][1],"$n",sH -> getNick(recvArr2[0])));
                                                                         }
@@ -215,7 +215,7 @@ class IRCConnection
                                                                 {
                                                                     if (recvArr2[3] == ":UPDATE")
                                                                         {
-                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),"Clearing triggers... ");
+                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),"\x01 ACTION Clearing triggers...\x01");
                                                                             trigger.clear();
                                                                             channelSendMsg(sH -> getNick(recvArr2[0]),"Retrieving new triggers...");
                                                                             triggerInit(trigger,getTriggersFrom("sverker.burbruee.se","/api.php"));
@@ -296,6 +296,20 @@ class IRCConnection
                     std::string body = resp.GetBody();
 
                     return body;
+                }
+
+            bool checkTriggerString(std::string str,std::string str2,std::string cs,std::string ps)
+                {
+                    if (cs == "no")
+                        str = sH -> toLower(str);
+
+                    if (ps == "yes" && str == str2)
+                        return true;
+
+                    if (ps == "no" && str.find(str2) != std::string::npos)
+                        return true;
+
+                    return false;
                 }
 
             sf::SocketTCP mainSocket;
