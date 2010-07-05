@@ -87,9 +87,44 @@ class stringHandler
                 return str;
             }
 
+        std::string generateWhitespace(std::string chanstr,std::string nickstr,std::string msgstr)
+            {
+                unsigned int whitespaces = 18 + chanstr.length() + nickstr.length();
+                unsigned int curSize = 0;
+                std::string endStr = "";
+
+                std::vector<std::string> words;
+                splitString(msgstr,words," ");
+
+                    for (unsigned int i = 0;i < words.size();i++)
+                        {
+                            if (words[i].length() > 80 - whitespaces)
+                                {
+                                    std::vector<std::string>::iterator it(words.begin());
+                                    words.insert(it + i + 1,words[i].substr((79 - whitespaces),words[i].length() - (79 - whitespaces)));
+                                    words[i] = words[i].substr(0,(79 - whitespaces));
+                                }
+
+                            if (words[i].length() + curSize < 80 - whitespaces)
+                                {
+                                    endStr += words[i].append(" ");
+                                    curSize += words[i].length();
+                                }
+                            else
+                                {
+                                    //KOMMENTERA PÅ WINDOWS-SYSTEM
+                                    //endStr.append("\n");
+                                    endStr.append(((80 - whitespaces) - curSize) + whitespaces,' ');
+                                    curSize = 0;
+                                    i--;
+                                }
+                        }
+
+                return endStr;
+            }
+
         std::string applyUniFix(std::string str)
             {
-                //195 165 164 182 - 0xC3 0xA5 0xA4 0xB6 0x85 0x84 0x96
                 str = replaceString(str,std::string("\xC3").append("\xA5"),"å");
                 str = replaceString(str,std::string("\xC3").append("\xA4"),"ä");
                 str = replaceString(str,std::string("\xC3").append("\xB6"),"ö");
@@ -231,7 +266,7 @@ class IRCConnection
                                                 {
                                                     if (recvArr2[2] != nick)
                                                         {
-                                                            std::cout << " [" << timeBuffer << "] [" << recvArr2[2] << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> parseUni(sH -> mergeLast(recvArr2,3)) << "\n";
+                                                            std::cout << " [" << timeBuffer << "] [" << recvArr2[2] << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> generateWhitespace(recvArr2[2],sH -> getNick(recvArr2[0]),sH -> parseUni(sH -> mergeLast(recvArr2,3))) << "\n";
 
                                                             for (unsigned int i = 0;i < trigger.size();i++)
                                                                 {
@@ -298,7 +333,7 @@ class IRCConnection
                     if (!socketSend(&mainSocket,std::string("PRIVMSG ").append(channel).append(" :").append(message)))
                         return false;
 
-                    std::cout << " [" << timeBuffer << "] [" << channel << "] <" << nick << "> " << sH -> parseUni(message) << "\n";
+                    std::cout << " [" << timeBuffer << "] [" << channel << "] <" << nick << "> " << sH -> generateWhitespace(channel,nick,sH -> parseUni(message)) << "\n";
                     return true;
                 }
 
