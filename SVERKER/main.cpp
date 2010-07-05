@@ -94,6 +94,7 @@ class IRCConnection
                     std::cout << "Retrieving triggers... ";
                     triggerInit(trigger,getTriggersFrom("sverker.burbruee.se","/api.php"));
                     std::cout << "DONE!\n[Loaded " << trigger.size() << " triggers.]\n\n";
+                    std::cout << getTriggersFrom("sverker.burbruee.se","/api.php") << "\n\n";
 
                     chan = channel;
                     nick = nickname;
@@ -215,11 +216,11 @@ class IRCConnection
                                                                 {
                                                                     if (recvArr2[3] == ":UPDATE")
                                                                         {
-                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),"\x01 ACTION Clearing triggers...\x01");
+                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),std::string("\x01").append("ACTION is clearing triggers...\x01"));
                                                                             trigger.clear();
-                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),"Retrieving new triggers...");
+                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),std::string("\x01").append("ACTION is retrieving new triggers...\x01"));
                                                                             triggerInit(trigger,getTriggersFrom("sverker.burbruee.se","/api.php"));
-                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),"DONE!");
+                                                                            channelSendMsg(sH -> getNick(recvArr2[0]),std::string("\x01").append("ACTION is done!\x01"));
                                                                         }
                                                                     else
                                                                         {
@@ -301,7 +302,10 @@ class IRCConnection
             bool checkTriggerString(std::string str,std::string str2,std::string cs,std::string ps)
                 {
                     if (cs == "no")
-                        str = sH -> toLower(str);
+                        {
+                            str = sH -> toLower(str);
+                            str2 = sH -> toLower(str2);
+                        }
 
                     if (ps == "yes" && str == str2)
                         return true;
