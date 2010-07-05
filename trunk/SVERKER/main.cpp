@@ -157,6 +157,8 @@ class IRCConnection
                                                 {
                                                     if (recvArr2[3] == "+i")
                                                         {
+															socketSend(&mainSocket,std::string("PRIVMSG Q@CServe.quakenet.org :AUTH SVERKERBOT mFKMFxnWvt"));																
+															socketSend(&mainSocket,std::string("MODE SVERKER +x"));	
                                                             socketSend(&mainSocket,std::string("JOIN ").insert(5,chan));
                                                         }
                                                 }
@@ -328,7 +330,7 @@ int main()
         IRCConnection IRC(&strH);
 
         sf::IPAddress iP("se.quakenet.org");
-        if (!IRC.connect(&iP,6667,"SVERKER123","SVERKER","#143"))
+        if (!IRC.connect(&iP,6667,"SVERKER","SVERKER","#143"))
             return 0;
 
         while(true)
