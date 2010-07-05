@@ -86,6 +86,29 @@ class stringHandler
 
                 return str;
             }
+
+        std::string applyUniFix(std::string str)
+            {
+                //195 165 164 182 - 0xC3 0xA5 0xA4 0xB6 0x85 0x84 0x96
+                str = replaceString(str,std::string("\xC3").append("\xA5"),"å");
+                str = replaceString(str,std::string("\xC3").append("\xA4"),"ä");
+                str = replaceString(str,std::string("\xC3").append("\xB6"),"ö");
+                str = replaceString(str,std::string("\xC3").append("\x85"),"Å");
+                str = replaceString(str,std::string("\xC3").append("\x84"),"Ä");
+                str = replaceString(str,std::string("\xC3").append("\x96"),"Ö");
+                return str;
+            }
+
+        std::string parseUni(std::string str)
+            {
+                str = replaceString(str,"å","\x86");
+                str = replaceString(str,"ä","\x84");
+                str = replaceString(str,"ö","\x94");
+                str = replaceString(str,"Å","\x8F");
+                str = replaceString(str,"Ä","\x8E");
+                str = replaceString(str,"Ö","\x99");
+                return str;
+            }
     };
 
 class IRCConnection
@@ -145,13 +168,13 @@ class IRCConnection
                     else
                         {
                             std::string srecv(recv);
+                            srecv = sH -> applyUniFix(srecv);
                             time_t myTime = time(NULL);
                             strftime(timeBuffer, 10, "%H:%M:%S", localtime(&myTime));
 
                             sH -> splitString(srecv,recvArr,"\r\n");
                             for (unsigned int i = 0;i < recvArr.size();i++)
                                 {
-                                    //std::cout << " >> " << recvArr[i] << "\n";
                                     sH -> splitString(recvArr[i],recvArr2);
 
                                     if (recvArr2.size() > 1)
@@ -166,8 +189,8 @@ class IRCConnection
                                                 {
                                                     if (recvArr2[3] == "+i")
                                                         {
-															//socketSend(&mainSocket,std::string("PRIVMSG Q@CServe.quakenet.org :AUTH SVERKERBOT mFKMFxnWvt"));
-															//socketSend(&mainSocket,std::string("MODE SVERKER +x"));
+															socketSend(&mainSocket,std::string("PRIVMSG Q@CServe.quakenet.org :AUTH SVERKERBOT mFKMFxnWvt"));
+															socketSend(&mainSocket,std::string("MODE SVERKER +x"));
                                                             socketSend(&mainSocket,std::string("JOIN ").insert(5,chan));
                                                         }
                                                 }
@@ -196,7 +219,7 @@ class IRCConnection
                                                 {
                                                     if (recvArr2.size() > 3)
                                                         {
-                                                            std::cout << " [" << timeBuffer << "] " << sH -> getNick(recvArr2[0]) << " left " << recvArr2[2] << ". (" << sH -> mergeLast(recvArr2,3) << ")\n";
+                                                            std::cout << " [" << timeBuffer << "] " << sH -> getNick(recvArr2[0]) << " left " << recvArr2[2] << ". (" << sH -> parseUni(sH -> mergeLast(recvArr2,3)) << ")\n";
                                                         }
                                                     else
                                                         {
@@ -208,7 +231,7 @@ class IRCConnection
                                                 {
                                                     if (recvArr2[2] != nick)
                                                         {
-                                                            std::cout << " [" << timeBuffer << "] [" << recvArr2[2] << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> mergeLast(recvArr2,3) << "\n";
+                                                            std::cout << " [" << timeBuffer << "] [" << recvArr2[2] << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> parseUni(sH -> mergeLast(recvArr2,3)) << "\n";
 
                                                             for (unsigned int i = 0;i < trigger.size();i++)
                                                                 {
@@ -275,7 +298,7 @@ class IRCConnection
                     if (!socketSend(&mainSocket,std::string("PRIVMSG ").append(channel).append(" :").append(message)))
                         return false;
 
-                    std::cout << " [" << timeBuffer << "] [" << channel << "] <" << nick << "> " << message << "\n";
+                    std::cout << " [" << timeBuffer << "] [" << channel << "] <" << nick << "> " << sH -> parseUni(message) << "\n";
                     return true;
                 }
 
@@ -355,12 +378,8 @@ int main()
         stringHandler strH;
         IRCConnection IRC(&strH);
 
-        /*std::string n;
-        std::cout << "NICKNAME: ";
-        std::cin >> n;*/
-
         sf::IPAddress iP("se.quakenet.org");
-        if (!IRC.connect(&iP,6667,"tjenare123","SVERKER","#143"))
+        if (!IRC.connect(&iP,6667,"SVERKER","SVERKER","#143"))
             return 0;
 
         while(true)
