@@ -142,7 +142,7 @@ class IRCConnection
                             sH -> splitString(srecv,recvArr,"\r\n");
                             for (unsigned int i = 0;i < recvArr.size();i++)
                                 {
-                                    std::cout << " >> " << recvArr[i] << "\n";
+                                    //std::cout << " >> " << recvArr[i] << "\n";
                                     sH -> splitString(recvArr[i],recvArr2);
 
                                     if (recvArr2.size() > 1)
@@ -345,6 +345,10 @@ int main()
 
         stringHandler strH;
         IRCConnection IRC(&strH);
+
+        /*std::string n;
+        std::cout << "NICKNAME: "
+        std::cin >> n;*/
 
         sf::IPAddress iP("se.quakenet.org");
         if (!IRC.connect(&iP,6667,"SVERKER","SVERKER","#143"))
