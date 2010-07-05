@@ -94,7 +94,6 @@ class IRCConnection
                     std::cout << "Retrieving triggers... ";
                     triggerInit(trigger,getTriggersFrom("sverker.burbruee.se","/api.php"));
                     std::cout << "DONE!\n[Loaded " << trigger.size() << " triggers.]\n\n";
-                    std::cout << getTriggersFrom("sverker.burbruee.se","/api.php") << "\n\n";
 
                     chan = channel;
                     nick = nickname;
@@ -143,7 +142,7 @@ class IRCConnection
                             sH -> splitString(srecv,recvArr,"\r\n");
                             for (unsigned int i = 0;i < recvArr.size();i++)
                                 {
-                                    //std::cout << " >> " << recvArr[i] << "\n";
+                                    std::cout << " >> " << recvArr[i] << "\n";
                                     sH -> splitString(recvArr[i],recvArr2);
 
                                     if (recvArr2.size() > 1)
