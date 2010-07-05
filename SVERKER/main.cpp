@@ -157,7 +157,6 @@ class IRCConnection
                                                 {
                                                     if (recvArr2[3] == "+i")
                                                         {
-                                                            std::cout << "\n Joining " << chan << "...\n";
                                                             socketSend(&mainSocket,std::string("JOIN ").insert(5,chan));
                                                         }
                                                 }
@@ -212,29 +211,9 @@ class IRCConnection
                                                                             triggerInit(trigger,getTriggersFrom("sverker.burbruee.se","/api.php"));
                                                                             channelSendMsg(sH -> getNick(recvArr2[0]),"DONE!");
                                                                         }
-
-                                                                    if (recvArr2[3] == ":JOIN")
+                                                                    else
                                                                         {
-                                                                            std::cout << "\n Joining " << recvArr2[4] << "...\n";
-                                                                            socketSend(&mainSocket,std::string("JOIN ").append(recvArr2[4]));
-                                                                        }
-																
-																	if (recvArr2[3] == ":PRIVMSG")
-                                                                        {
-                                                                            std::cout << "\n Saying '" << recvArr2[5] << "' in " << recvArr2[4] << "...\n";																			
-																			channelSendMsg(recvArr2[4], sH -> mergeLast(recvArr2,5));
-                                                                        }
-
-																	if (recvArr2[3] == ":PART")
-                                                                        {
-                                                                            if (recvArr2.size() > 5)
-                                                                                {
-                                                                                    socketSend(&mainSocket,std::string("PART ").append(recvArr2[4]).append(" :").append(sH -> mergeLast(recvArr2,5)));
-                                                                                }
-                                                                            else
-                                                                                {
-                                                                                    socketSend(&mainSocket,std::string("PART ").append(recvArr2[4]));
-                                                                                }
+                                                                            socketSend(&mainSocket,sH -> mergeLast(recvArr2,3));
                                                                         }
                                                                 }
                                                         }
@@ -341,11 +320,8 @@ int main()
         IRCConnection IRC(&strH);
 
         sf::IPAddress iP("se.quakenet.org");
-        if (!IRC.connect(&iP,6667,"SVERKER","Sverker","#sverker2"))
-		{
-			std::cin.get();
+        if (!IRC.connect(&iP,6667,"SVERKER","Sverker","#erefest"))
             return 0;
-		}
 
         while(true)
             {
