@@ -38,7 +38,7 @@ TO DO (in order of importance)
 		[X] Position-sensitive or not
 
 
-	[ ] Prevent flooding - internal timer.
+	[X] Prevent flooding - internal timer.
 
 
 	[ ] Extend the API
