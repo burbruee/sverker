@@ -47,4 +47,4 @@ TO DO (in order of importance)
 		[ ] Config
 
 
-	[ ] Better UNICODE-support
+	[X] Better UNICODE-support
