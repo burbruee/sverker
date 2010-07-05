@@ -142,7 +142,7 @@ class IRCConnection
                             sH -> splitString(srecv,recvArr,"\r\n");
                             for (unsigned int i = 0;i < recvArr.size();i++)
                                 {
-                                    //std::cout << " >> " << recvArr[i] << "\n";
+                                    std::cout << " >> " << recvArr[i] << "\n";
                                     sH -> splitString(recvArr[i],recvArr2);
 
                                     if (recvArr2.size() > 1)
@@ -158,6 +158,14 @@ class IRCConnection
                                                     if (recvArr2[3] == "+i")
                                                         {
                                                             socketSend(&mainSocket,std::string("JOIN ").insert(5,chan));
+                                                        }
+                                                }
+
+                                            if (recvArr2[1] == "NICK")
+                                                {
+                                                    if (sH -> getNick(recvArr2[0]) == nick)
+                                                        {
+                                                            nick = sH -> mergeLast(recvArr2,2);
                                                         }
                                                 }
 
@@ -320,7 +328,7 @@ int main()
         IRCConnection IRC(&strH);
 
         sf::IPAddress iP("se.quakenet.org");
-        if (!IRC.connect(&iP,6667,"SVERKER","Sverker","#erefest"))
+        if (!IRC.connect(&iP,6667,"SVERKER","Sverker","#143"))
             return 0;
 
         while(true)
