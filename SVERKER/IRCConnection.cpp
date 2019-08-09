@@ -109,13 +109,11 @@ bool IRCConnection::listen()
                         {
                             if (recvArr2[3] == "+i")
                             {
-                                /*
-                                socketSend(&mainSocket,std::string("PRIVMSG Q@CServe.quakenet.org :AUTH SVERKERBOT mFKMFxnWvt"));
-                                socketSend(&mainSocket,std::string("MODE SVERKER +x"));
-                                socketSend(&mainSocket,std::string("JOIN ").insert(5,chan));
-
-                                oauth:ciu8xi3w8u3cddvrh3r6nkrqav2kkd
-                                */
+                                if (conf.getMode() == 0)
+                                {
+                                    socketSend(&mainSocket,std::string("PRIVMSG Q@CServe.quakenet.org :AUTH SVERKERBOT mFKMFxnWvt"));
+                                    socketSend(&mainSocket,std::string("MODE SVERKER +x"));
+                                }                               
                                 
                                 socketSend(&mainSocket,std::string("JOIN ").insert(5,chan));
                             }
