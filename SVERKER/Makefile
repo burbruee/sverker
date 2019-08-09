@@ -2,13 +2,14 @@ CC=gcc
 CPP=g++
 CFLAGS=-I/usr/include/sfml1/
 LIBS=-lsfml-system-1.6 -lsfml-network-1.6
-OPTS=-Wno-multichar -std=c++11
+OPTS=-Wall -std=c++11
+OBJ=main.o config.o stringHandler.o IRCConnection.o
 
 %.o: %.cpp
 	$(CC) -c -o $@ $< $(CFLAGS) $(OPTS)
 
-sverkerbot: main.o config.o stringHandler.o IRCConnection.o
-	$(CPP) -o sverkerbot $(LIBS) $(OPTS) main.o config.o stringHandler.o IRCConnection.o
+sverkerbot: $(OBJ)
+	$(CPP) -o sverkerbot $(LIBS) $(OPTS) $(OBJ)
 
 clean:
 	rm -f *.o sverkerbot
