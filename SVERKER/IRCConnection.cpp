@@ -101,89 +101,89 @@ bool IRCConnection::listen()
                 if (recvArr2[1] == "AUTH")
                     std::cout << " >> " << sH -> mergeLast(recvArr2,2) << "\n";
 
-                    if (recvArr2[0] == "PING")
-                        socketSend(&mainSocket,std::string("PONG ").insert(5,recvArr2[1]));
-                        //socketSend(&mainSocket,std::string("PONG :tmi.twitch.tv"));
+                if (recvArr2[0] == "PING")
+                    socketSend(&mainSocket,std::string("PONG ").insert(5,recvArr2[1]));
+                    //socketSend(&mainSocket,std::string("PONG :tmi.twitch.tv"));
 
-                        if (recvArr2[1] == "MODE")
+                if (recvArr2[1] == "MODE")
+                {
+                    if (recvArr2[3] == "+i")
+                    {
+                        if (conf.getMode() == 0)
                         {
-                            if (recvArr2[3] == "+i")
-                            {
-                                if (conf.getMode() == 0)
-                                {
-                                    socketSend(&mainSocket,std::string("PRIVMSG Q@CServe.quakenet.org :AUTH SVERKERBOT mFKMFxnWvt"));
-                                    socketSend(&mainSocket,std::string("MODE SVERKER +x"));
-                                }                               
+                            socketSend(&mainSocket,std::string("PRIVMSG Q@CServe.quakenet.org :AUTH SVERKERBOT mFKMFxnWvt"));
+                            socketSend(&mainSocket,std::string("MODE SVERKER +x"));
+                        }                               
                                 
-                                socketSend(&mainSocket,std::string("JOIN ").insert(5,chan));
+                        socketSend(&mainSocket,std::string("JOIN ").insert(5,chan));
+                    }
+                }
+
+                if (recvArr2[1] == "NICK")
+                {
+                    if (sH -> getNick(recvArr2[0]) == nick)
+                    {
+                        nick = sH -> mergeLast(recvArr2,2);
+                    }
+                }
+
+                if (recvArr2[1] == "JOIN")
+                {
+                    if (sH -> getNick(recvArr2[0]) == nick)
+                    {
+                        std::cout << " You're now talking in " << recvArr2[2] << ":\n";
+                    }
+                    else
+                    {
+                        std::cout << " [" << timeBuffer << "] " << sH -> getNick(recvArr2[0]) << " joined " << recvArr2[2] << ".\n";
+                    }
+                }
+
+                if (recvArr2[1] == "PART")
+                {
+                    if (recvArr2.size() > 3)
+                    {
+                        std::cout << " [" << timeBuffer << "] " << sH -> getNick(recvArr2[0]) << " left " << recvArr2[2] << ". (" << sH -> parseUni(sH -> mergeLast(recvArr2,3)) << ")\n";
+                    }
+                    else
+                    {
+                        std::cout << " [" << timeBuffer << "] " << sH -> getNick(recvArr2[0]) << " left " << recvArr2[2] << ".\n";
+                    }
+                }
+
+                if (recvArr2[1] == "PRIVMSG")
+                {
+                    if (recvArr2[2] != nick)
+                    {
+                        std::cout << " [" << timeBuffer << "] [" << recvArr2[2] << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> generateWhitespace(recvArr2[2],sH -> getNick(recvArr2[0]),sH -> parseUni(sH -> mergeLast(recvArr2,3))) << "\n";
+
+                        for (unsigned int i = 0;i < trigger.size();i++)
+                        {
+                            if (checkTriggerString(sH -> mergeLast(recvArr2,3),trigger[i][0],trigger[i][2],trigger[i][3]))
+                            {
+                                channelSendMsg(recvArr2[2],sH -> replaceString(trigger[i][1],"$n",sH -> getNick(recvArr2[0])));
                             }
                         }
-
-                        if (recvArr2[1] == "NICK")
+                    }
+                    else
+                    {
+                        if (sH -> getNick(recvArr2[0]) == "Frasse" || sH -> getNick(recvArr2[0]) == "burb")
                         {
-                            if (sH -> getNick(recvArr2[0]) == nick)
+                            if (recvArr2[3] == ":UPDATE")
                             {
-                                nick = sH -> mergeLast(recvArr2,2);
-                            }
-                        }
-
-                        if (recvArr2[1] == "JOIN")
-                        {
-                            if (sH -> getNick(recvArr2[0]) == nick)
-                            {
-                                std::cout << " You're now talking in " << recvArr2[2] << ":\n";
+                                channelSendMsg(sH -> getNick(recvArr2[0]),std::string("\x01").append("ACTION is clearing triggers...\x01"));
+                                trigger.clear();
+                                channelSendMsg(sH -> getNick(recvArr2[0]),std::string("\x01").append("ACTION is retrieving new triggers...\x01"));
+                                triggerInit(trigger,IRCConnection::getTriggersFrom(conf.getApiHost(),conf.getApiUri()));
+                                channelSendMsg(sH -> getNick(recvArr2[0]),std::string("\x01").append("ACTION is done!\x01"));
                             }
                             else
                             {
-                                std::cout << " [" << timeBuffer << "] " << sH -> getNick(recvArr2[0]) << " joined " << recvArr2[2] << ".\n";
+                                socketSend(&mainSocket,sH -> mergeLast(recvArr2,3));
                             }
                         }
-
-                        if (recvArr2[1] == "PART")
-                        {
-                            if (recvArr2.size() > 3)
-                            {
-                                std::cout << " [" << timeBuffer << "] " << sH -> getNick(recvArr2[0]) << " left " << recvArr2[2] << ". (" << sH -> parseUni(sH -> mergeLast(recvArr2,3)) << ")\n";
-                            }
-                            else
-                            {
-                                std::cout << " [" << timeBuffer << "] " << sH -> getNick(recvArr2[0]) << " left " << recvArr2[2] << ".\n";
-                            }
-                        }
-
-                        if (recvArr2[1] == "PRIVMSG")
-                        {
-                            if (recvArr2[2] != nick)
-                            {
-                                std::cout << " [" << timeBuffer << "] [" << recvArr2[2] << "] <" << sH -> getNick(recvArr2[0]) << "> " << sH -> generateWhitespace(recvArr2[2],sH -> getNick(recvArr2[0]),sH -> parseUni(sH -> mergeLast(recvArr2,3))) << "\n";
-
-                                for (unsigned int i = 0;i < trigger.size();i++)
-                                {
-                                    if (checkTriggerString(sH -> mergeLast(recvArr2,3),trigger[i][0],trigger[i][2],trigger[i][3]))
-                                    {
-                                        channelSendMsg(recvArr2[2],sH -> replaceString(trigger[i][1],"$n",sH -> getNick(recvArr2[0])));
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (sH -> getNick(recvArr2[0]) == "Frasse" || sH -> getNick(recvArr2[0]) == "burb")
-                                {
-                                    if (recvArr2[3] == ":UPDATE")
-                                    {
-                                        channelSendMsg(sH -> getNick(recvArr2[0]),std::string("\x01").append("ACTION is clearing triggers...\x01"));
-                                        trigger.clear();
-                                        channelSendMsg(sH -> getNick(recvArr2[0]),std::string("\x01").append("ACTION is retrieving new triggers...\x01"));
-                                        triggerInit(trigger,IRCConnection::getTriggersFrom(conf.getApiHost(),conf.getApiUri()));
-                                        channelSendMsg(sH -> getNick(recvArr2[0]),std::string("\x01").append("ACTION is done!\x01"));
-                                    }
-                                    else
-                                    {
-                                        socketSend(&mainSocket,sH -> mergeLast(recvArr2,3));
-                                    }
-                                }
-                            }
-                        }
+                    }
+                }
             }
 
             recvArr2.clear();
