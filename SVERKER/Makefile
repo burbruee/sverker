@@ -1,7 +1,7 @@
 CC=gcc
 CPP=g++
 CFLAGS=-I/usr/include/sfml1/
-LIBS=-lsfml-system-1.6 -lsfml-network-1.6
+LIBS=-lsfml-network-1.6
 OPTS=-Wall -std=c++11
 OBJ=main.o config.o stringHandler.o IRCConnection.o
 
