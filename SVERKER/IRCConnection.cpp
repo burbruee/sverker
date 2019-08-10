@@ -1,12 +1,7 @@
-#include <SFML/System.hpp>
 #include <SFML/Network.hpp>
-#include <algorithm>
-#include <vector>
 #include <iostream>
 #include <string.h>
 #include <string>
-#include <time.h>
-#include <cctype>
 #include "IRCConnection.h"
 
 IRCConnection::IRCConnection()
